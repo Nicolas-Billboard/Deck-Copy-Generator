@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deck Copy Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="container">
+            <header class="site-header">
+                <h1>Nic's <span class="accent">Deck Copy Generator</span></h1>
+                <p class="subtitle">Create compelling product descriptions with an advanced copy generation system</p>
+            </header>
+
+            <main class="content-grid">
+                <form id="deckCopyForm" class="input-card">
+                    <div class="form-header">
+                        <i class="fas fa-pen-fancy"></i>
+                        <h2>Input Details</h2>
+                    </div>
+                    
+                    <div class="form-content">
+                        <div class="spec-label">
+                            <i class="fas fa-keyboard"></i>
+                            <span>Enter Product Information</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="deckTitle">
+                                <i class="fas fa-heading"></i>
+                                Deck Title
+                            </label>
+                            <input type="text" id="deckTitle" name="deckTitle" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="brand">
+                                <i class="fas fa-building"></i>
+                                Brand Category
+                            </label>
+                            <select id="brand" name="brand" required>
+                                <option value="">Select a category</option>
+                                <option value="alcohol">Alcohol & Beverages</option>
+                                <option value="uniforms">Uniforms & Apparel</option>
+                                <option value="giveaways">Giveaways & Merch</option>
+                                <option value="electronics">Electronics & Tech</option>
+                                <option value="sports">Sports & Recreation</option>
+                                <option value="luxury">Luxury & Premium</option>
+                                <option value="office">Office & Professional</option>
+                                <option value="lifestyle">Lifestyle & Wellness</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="itemName">
+                                <i class="fas fa-tag"></i>
+                                Item Name
+                            </label>
+                            <input type="text" id="itemName" name="itemName" required placeholder="Enter the specific item name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="tone">
+                                <i class="fas fa-music"></i>
+                                Tone
+                            </label>
+                            <select id="tone" name="tone" required>
+                                <option value="">Select a tone</option>
+                                <option value="casual">Casual & Playful</option>
+                                <option value="professional">Professional & Refined</option>
+                                <option value="adventurous">Adventurous & Outdoor</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="keyAttributes">
+                                <i class="fas fa-list-ul"></i>
+                                Key Attributes
+                            </label>
+                            <textarea id="keyAttributes" name="keyAttributes" rows="4" placeholder="Enter key attributes, one per line"></textarea>
+                        </div>
+                        
+                        <button type="submit">
+                            <span class="button-content">
+                                <i class="fas fa-wand-magic-sparkles"></i>
+                                Generate Copy
+                            </span>
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="output" class="output-section">
+                    <div class="output-header">
+                        <i class="fas fa-file-lines"></i>
+                        <h2>Generated Copy</h2>
+                    </div>
+                    <div class="output-content">
+                        <div class="spec-label">
+                            <i class="fas fa-paragraph"></i>
+                            <span>Product Description</span>
+                        </div>
+                        <div id="generatedContent" class="generated-text"></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
