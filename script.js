@@ -1,6 +1,42 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('deckCopyForm');
     const generatedContent = document.getElementById('generatedContent');
+    const copyButton = document.createElement('button');
+    
+    // Setup copy button
+    copyButton.innerHTML = '<i class="fas fa-copy"></i> Copy to Clipboard';
+    copyButton.className = 'copy-button';
+    copyButton.style.display = 'none'; // Hide initially
+    
+    // Insert copy button after generated content
+    generatedContent.parentNode.insertBefore(copyButton, generatedContent.nextSibling);
+    
+    // Copy functionality
+    copyButton.addEventListener('click', async function() {
+        try {
+            await navigator.clipboard.writeText(generatedContent.textContent);
+            
+            // Visual feedback
+            const originalText = copyButton.innerHTML;
+            copyButton.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            copyButton.classList.add('copied');
+            
+            // Reset button after 2 seconds
+            setTimeout(() => {
+                copyButton.innerHTML = originalText;
+                copyButton.classList.remove('copied');
+            }, 2000);
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+            copyButton.innerHTML = '<i class="fas fa-times"></i> Failed to copy';
+            copyButton.classList.add('error');
+            
+            setTimeout(() => {
+                copyButton.innerHTML = '<i class="fas fa-copy"></i> Copy to Clipboard';
+                copyButton.classList.remove('error');
+            }, 2000);
+        }
+    });
 
     // Expanded tone-based sentence fragments
     const introFragments = {
@@ -951,7 +987,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function generateDescription(itemName, tone, brand, features = []) {
         // Format item name
         itemName = formatAttribute(itemName);
-        itemName = /^[a-z]+ [a-z]+$/.test(itemName) ? `the ${itemName}` : itemName;
+        // Add article if needed and not already a "the" phrase
+        if (!itemName.startsWith('the ')) {
+            itemName = addArticle(itemName);
+        }
         
         // Get patterns
         const patterns = tonePatterns[tone];
@@ -1017,5 +1056,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Even if keyAttributes is empty array, generate description
         const description = generateDescription(itemName, tone, brand, keyAttributes);
         generatedContent.textContent = description;
+        
+        // Show copy button when we have content
+        copyButton.style.display = 'inline-flex';
     });
+
+    // Set helpful placeholders
+    document.getElementById('itemName').placeholder = "e.g., insulated water bottle, leather wallet";
+    document.getElementById('keyAttributes').placeholder = "e.g., stainless steel construction\ndouble-wall insulated\nleakproof design\n\nAdd one feature per line";
 }); 
