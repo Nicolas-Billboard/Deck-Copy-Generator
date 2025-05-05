@@ -985,16 +985,27 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function generateDescription(itemName, tone, brand, features = []) {
-        // Format item name
+        // Format item name and prepare article
         itemName = formatAttribute(itemName);
-        // Add article if needed and not already a "the" phrase
-        if (!itemName.startsWith('the ')) {
-            itemName = addArticle(itemName);
-        }
+        const itemWithArticle = addArticle(itemName);
         
         // Get patterns
         const patterns = tonePatterns[tone];
         const brandContext = brandContexts[brand];
+        
+        // Build description
+        const intro = Math.random() < 0.3 && brandContext ? 
+            getRandomFragment(brandContext.intros) : 
+            getRandomFragment(patterns.intros);
+            
+        // Check if intro already ends with 'a', 'an', or 'the'
+        const introEndsWithArticle = /\b(a|an|the)\s*$/i.test(intro);
+        
+        // Use appropriate item name format based on intro
+        const itemToUse = introEndsWithArticle ? itemName : itemWithArticle;
+        
+        const functionDesc = getRandomFragment(patterns.functions);
+        let descriptionText = `${intro} ${itemToUse} ${functionDesc}`;
         
         // Prepare features
         let allFeatures = [...features.map(f => formatAttribute(f))];
@@ -1012,14 +1023,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Remove duplicates and limit features
         allFeatures = [...new Set(allFeatures)].slice(0, 3);
-        
-        // Build description
-        const intro = Math.random() < 0.3 && brandContext ? 
-            getRandomFragment(brandContext.intros) : 
-            getRandomFragment(patterns.intros);
-        
-        const functionDesc = getRandomFragment(patterns.functions);
-        let descriptionText = `${intro} ${itemName} ${functionDesc}`;
         
         if (allFeatures.length > 0) {
             descriptionText += `, featuring ${formatFeatureList(allFeatures)}`;
