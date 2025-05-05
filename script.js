@@ -1065,6 +1065,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Set helpful placeholders
-    document.getElementById('itemName').placeholder = "e.g., insulated water bottle, leather wallet";
+    document.getElementById('itemName').placeholder = "e.g., insulated water bottle";
     document.getElementById('keyAttributes').placeholder = "e.g., stainless steel construction\ndouble-wall insulated\nleakproof design\n\nAdd one feature per line";
 }); 
