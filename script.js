@@ -11,31 +11,129 @@ document.addEventListener('DOMContentLoaded', function() {
     // Insert copy button after generated content
     generatedContent.parentNode.insertBefore(copyButton, generatedContent.nextSibling);
     
+    // Create shortcuts info element
+    const shortcutsInfo = document.createElement('div');
+    shortcutsInfo.className = 'shortcuts-info';
+    shortcutsInfo.innerHTML = 'Keyboard shortcuts: <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to generate, <kbd>Ctrl</kbd> + <kbd>C</kbd> to copy';
+    document.querySelector('.container').appendChild(shortcutsInfo);
+
+    // Create history section
+    const historySection = document.createElement('div');
+    historySection.className = 'history-section';
+    historySection.innerHTML = `
+        <div class="history-header">
+            <i class="fas fa-history"></i>
+            <h3>Generation History</h3>
+        </div>
+        <div class="history-timeline">
+            <div class="history-empty">No descriptions generated yet</div>
+        </div>
+    `;
+    document.querySelector('.output-content').appendChild(historySection);
+
+    const historyTimeline = historySection.querySelector('.history-timeline');
+    const historyItems = [];
+
     // Copy functionality
-    copyButton.addEventListener('click', async function() {
+    async function copyToClipboard(text) {
         try {
-            await navigator.clipboard.writeText(generatedContent.textContent);
-            
-            // Visual feedback
-            const originalText = copyButton.innerHTML;
-            copyButton.innerHTML = '<i class="fas fa-check"></i> Copied!';
-            copyButton.classList.add('copied');
-            
-            // Reset button after 2 seconds
-            setTimeout(() => {
-                copyButton.innerHTML = originalText;
-                copyButton.classList.remove('copied');
-            }, 2000);
+            await navigator.clipboard.writeText(text);
+            return true;
         } catch (err) {
             console.error('Failed to copy text: ', err);
-            copyButton.innerHTML = '<i class="fas fa-times"></i> Failed to copy';
-            copyButton.classList.add('error');
+            return false;
+        }
+    }
+
+    function addToHistory(description, itemName, tone, brand, attributes) {
+        const timestamp = new Date().toLocaleTimeString();
+        const historyItem = document.createElement('div');
+        historyItem.className = 'history-item';
+        
+        historyItem.innerHTML = `
+            <div class="history-item-header">
+                <div class="history-item-meta">
+                    <span><i class="fas fa-clock"></i>${timestamp}</span>
+                    <span><i class="fas fa-tag"></i>${itemName}</span>
+                    <span><i class="fas fa-palette"></i>${tone}</span>
+                    <span><i class="fas fa-store"></i>${brand}</span>
+                </div>
+            </div>
+            <div class="history-item-content">${description}</div>
+            <div class="history-item-actions">
+                <button class="copy-desc-btn"><i class="fas fa-copy"></i>Copy Description</button>
+            </div>
+        `;
+
+        // Remove empty message if it exists
+        const emptyMessage = historyTimeline.querySelector('.history-empty');
+        if (emptyMessage) {
+            emptyMessage.remove();
+        }
+
+        // Add to timeline
+        historyTimeline.insertBefore(historyItem, historyTimeline.firstChild);
+        
+        // Add copy functionality
+        historyItem.querySelector('.copy-desc-btn').addEventListener('click', async function() {
+            const success = await copyToClipboard(description);
+            const originalText = this.innerHTML;
+            this.innerHTML = success ? 
+                '<i class="fas fa-check"></i>Copied!' : 
+                '<i class="fas fa-times"></i>Failed';
+            this.classList.add(success ? 'copied' : 'error');
             
             setTimeout(() => {
-                copyButton.innerHTML = '<i class="fas fa-copy"></i> Copy to Clipboard';
-                copyButton.classList.remove('error');
+                this.innerHTML = originalText;
+                this.classList.remove('copied', 'error');
             }, 2000);
+        });
+
+        // Limit history to 10 items
+        if (historyTimeline.children.length > 10) {
+            historyTimeline.removeChild(historyTimeline.lastChild);
         }
+    }
+
+    // Generate description function
+    function generateAndDisplay() {
+        const itemName = document.getElementById('itemName').value;
+        const tone = document.getElementById('tone').value;
+        const brand = document.getElementById('brand').value;
+        const keyAttributes = document.getElementById('keyAttributes').value
+            .split('\n')
+            .filter(attr => attr.trim() !== '');
+        
+        // Even if keyAttributes is empty array, generate description
+        const description = generateDescription(itemName, tone, brand, keyAttributes);
+        generatedContent.textContent = description;
+        
+        // Show copy button when we have content
+        copyButton.style.display = 'inline-flex';
+
+        // Add to history
+        addToHistory(description, itemName, tone, brand, keyAttributes);
+    }
+
+    // Add keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Ctrl + Enter to generate
+        if (e.ctrlKey && e.key === 'Enter') {
+            e.preventDefault();
+            generateAndDisplay();
+        }
+        
+        // Ctrl + C to copy (only when text is generated)
+        if (e.ctrlKey && e.key === 'c' && generatedContent.textContent.trim() !== '') {
+            e.preventDefault();
+            copyToClipboard(generatedContent.textContent);
+        }
+    });
+
+    // Form submit handler
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        generateAndDisplay();
     });
 
     // Expanded tone-based sentence fragments
@@ -1045,24 +1143,6 @@ document.addEventListener('DOMContentLoaded', function() {
             .map(sentence => sentence.charAt(0).toUpperCase() + sentence.slice(1))
             .join('. ');
     }
-
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const itemName = document.getElementById('itemName').value;
-        const tone = document.getElementById('tone').value;
-        const brand = document.getElementById('brand').value;
-        const keyAttributes = document.getElementById('keyAttributes').value
-            .split('\n')
-            .filter(attr => attr.trim() !== '');
-        
-        // Even if keyAttributes is empty array, generate description
-        const description = generateDescription(itemName, tone, brand, keyAttributes);
-        generatedContent.textContent = description;
-        
-        // Show copy button when we have content
-        copyButton.style.display = 'inline-flex';
-    });
 
     // Set helpful placeholders
     document.getElementById('itemName').placeholder = "e.g., insulated water bottle";
