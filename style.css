@@ -289,6 +289,10 @@ button:hover::after {
 }
 
 @media (max-width: 768px) {
+    .shortcuts-info {
+        display: none;
+    }
+
     .content-grid {
         grid-template-columns: 1fr;
     }
@@ -413,4 +417,221 @@ button:hover::after {
 
 .copy-button i {
     font-size: 16px;
+}
+
+.shortcuts-info {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background-color: var(--white);
+    color: var(--text-light);
+    font-size: 0.9rem;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+    transition: transform var(--transition-smooth), opacity var(--transition-smooth);
+    transform: translateY(0);
+    opacity: 0.85;
+}
+
+.shortcuts-info:hover {
+    transform: translateY(-5px);
+    opacity: 1;
+}
+
+.shortcuts-info kbd {
+    display: inline-block;
+    padding: 2px 6px;
+    font-family: monospace;
+    font-size: 0.9em;
+    color: var(--text-color);
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-shadow: var(--shadow-sm);
+    margin: 0 2px;
+}
+
+/* Add responsive adjustments for the shortcuts info */
+@media (max-width: 768px) {
+    .shortcuts-info {
+        bottom: 1rem;
+        right: 1rem;
+        left: 1rem;
+        font-size: 0.85rem;
+        padding: 0.75rem 1rem;
+        text-align: center;
+    }
+}
+
+/* History section styles */
+.history-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--border-color);
+}
+
+.history-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+    position: sticky;
+    top: 0;
+    background: var(--white);
+    z-index: 2;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.history-header i {
+    color: var(--accent-color);
+}
+
+.history-timeline {
+    position: relative;
+    padding-left: 2rem;
+    max-height: 400px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-color) var(--border-color);
+}
+
+/* Webkit scrollbar styles */
+.history-timeline::-webkit-scrollbar {
+    width: 6px;
+}
+
+.history-timeline::-webkit-scrollbar-track {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.history-timeline::-webkit-scrollbar-thumb {
+    background-color: var(--accent-color);
+    border-radius: 3px;
+}
+
+/* Timeline vertical line */
+.history-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border-color);
+    border-radius: 1px;
+    z-index: 1;
+}
+
+/* History items */
+.history-item {
+    position: relative;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    animation: fadeIn 0.3s ease-out;
+    z-index: 2;
+}
+
+.history-item::before {
+    content: '';
+    position: absolute;
+    left: -2rem;
+    top: 1.5rem;
+    width: 12px;
+    height: 12px;
+    background: var(--accent-color);
+    border: 3px solid var(--white);
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px var(--border-color);
+    z-index: 2;
+}
+
+/* Add shadow overlays for scroll indication */
+.history-timeline::after {
+    content: '';
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: linear-gradient(transparent, var(--white));
+    pointer-events: none;
+    z-index: 1;
+}
+
+.history-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    gap: 1rem;
+}
+
+.history-item-meta {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.history-item-meta span {
+    display: inline-block;
+    margin-right: 1rem;
+}
+
+.history-item-meta i {
+    margin-right: 0.25rem;
+    color: var(--accent-color);
+}
+
+.history-item-content {
+    color: var(--text-color);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+}
+
+.history-item-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.history-item-actions button {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    background: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    width: auto;
+}
+
+.history-item-actions button:hover {
+    background: var(--accent-color);
+    color: var(--white);
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+.history-item-actions button i {
+    margin-right: 0.5rem;
+}
+
+.history-empty {
+    text-align: center;
+    color: var(--text-light);
+    font-style: italic;
+    padding: 2rem;
+    background: var(--white);
+    z-index: 2;
+    position: relative;
 } 
